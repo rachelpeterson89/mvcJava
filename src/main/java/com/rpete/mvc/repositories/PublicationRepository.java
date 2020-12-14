@@ -1,13 +1,11 @@
 package com.rpete.mvc.repositories;
 
-
 import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import com.rpete.mvc.models.Book;
-
+import com.rpete.mvc.models.Publication;
 
 @Repository
-public interface BookRepository extends CrudRepository<Book, Long>{
-    List<Book> findAll();
+public interface PublicationRepository extends CrudRepository<Publication, Long> {
+	List<Publication> findAll();
 }

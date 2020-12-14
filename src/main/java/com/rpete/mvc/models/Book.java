@@ -1,19 +1,18 @@
 package com.rpete.mvc.models;
 
-import java.util.Date;
+import java.util.List;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
-
-import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name="books")
@@ -21,97 +20,59 @@ public class Book {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+	
     @Size(min = 5, max = 200)
-    private String title;
-    @Size(min = 5, max = 200)
-    private String description;
-    @Size(min = 3, max = 40)
-    private String language;
-    @Min(100)
-    private Integer numberOfPages;
-    // This will not allow the createdAt column to be updated after creation
-    @Column(updatable=false)
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-    private Date createdAt;
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-    private Date updatedAt;
+    private String Title;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="author_id")
+    private Author author;
+    
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "publications", 
+        joinColumns = @JoinColumn(name = "book_id"), 
+        inverseJoinColumns = @JoinColumn(name = "publisher_id")
+    )
+    
+    private List<Publisher> publishers;
     
     public Book() {
     	
     }
-    
-    public Book(String title, @Size(min = 5, max = 200) String description,
-			String language, Integer numberOfPages) {
-		super();
-		this.title = title;
-		this.description = description;
-		this.language = language;
-		this.numberOfPages = numberOfPages;
-	}
 
 	public Long getId() {
 		return id;
+	}
+
+	public String getTitle() {
+		return Title;
+	}
+
+	public void setTitle(String title) {
+		Title = title;
+	}
+
+	public Author getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(Author author) {
+		this.author = author;
 	}
 
 	public void setId(Long id) {
 		this.id = id;
 	}
 
-	public String getTitle() {
-		return title;
+	public List<Publisher> getPublishers() {
+		return publishers;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setPublishers(List<Publisher> publishers) {
+		this.publishers = publishers;
 	}
 
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getLanguage() {
-		return language;
-	}
-
-	public void setLanguage(String language) {
-		this.language = language;
-	}
-
-	public Integer getNumberOfPages() {
-		return numberOfPages;
-	}
-
-	public void setNumberOfPages(Integer numberOfPages) {
-		this.numberOfPages = numberOfPages;
-	}
-
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public Date getUpdatedAt() {
-		return updatedAt;
-	}
-
-	public void setUpdatedAt(Date updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-
-	@PrePersist
-    protected void onCreate() {
-    	this.createdAt = new Date();
-    }
     
-    @PreUpdate
-    protected void onUpdate() {
-    	this.updatedAt = new Date();
-    }
+    
 }
